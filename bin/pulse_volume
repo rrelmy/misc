@@ -1,0 +1,74 @@
+#!/bin/bash
+
+SINK=`pulse_running_sink`
+TOTALVOLUME=65540 # value of 100% volume
+STEP=$(($TOTALVOLUME/10)) # steps
+MAXVOLUME=$(($TOTALVOLUME/100*150)) # max volue (gui goes to 150%)
+declare -i CURVOL=`cat ~/.pulsevolume` # reads in the current volume
+
+
+function lower {
+	echo "lowering volume";
+	setvolume $(($CURVOL-$STEP))
+}
+function raise {
+	echo "raise volume";
+	setvolume $(($CURVOL+$STEP))
+}
+function setvolume {
+	VOLUME=$1
+	if [[ $VOLUME -le 0 ]]
+	then
+		VOLUME=0
+	fi
+	if [[ $VOLUME -gt $MAXVOLUME ]]
+	then
+		VOLUME=$MAXVOLUME
+	fi
+	echo "set volume to $VOLUME"
+	echo $VOLUME > ~/.pulsevolume
+	pactl set-sink-volume $SINK $VOLUME
+}
+function mute {
+	echo "muting"
+	echo 1 > ~/.pulsemute
+	pactl set-sink-mute $SINK 1
+}
+function unmute {
+	echo "unmute"
+	echo 0 > ~/.pulsemute
+	pactl set-sink-mute $SINK 0
+}
+function togglemute {
+	echo "togglemute"
+	MUTE=`cat ~/.pulsemute`
+	test "$MUTE" = "1"
+	RETURN=$?
+	echo $RETURN
+	if [[ $RETURN -eq 0 ]]
+	then
+		unmute
+	fi
+	if [[ $RETURN -eq 1 ]]
+	then
+		mute
+	fi
+}
+
+case "$1" in
+	lower)
+		lower
+	;;
+	raise)
+		raise
+	;;
+	mute)
+		togglemute
+	;;
+#	unmute)
+#		unmute
+#	;;
+#	togglemute)
+#		togglemute
+#	;;
+esac

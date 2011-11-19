@@ -1,0 +1,9 @@
+#!/usr/bin/php5
+<?php
+// TODO write that as shell script...
+$list = `pactl list`;
+
+preg_match_all('/Sink \#(\d)\n\tState\: RUNNING/', $list, $regs);
+if ($regs && $regs[1]) {
+	echo $regs[1][0];
+}
