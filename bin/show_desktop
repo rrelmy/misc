@@ -1,0 +1,7 @@
+#!/bin/bash
+# requirement wmctrl
+if [ -a "/tmp/showing-desktop" ]; then
+	wmctrl -k off && rm /tmp/showing-desktop
+else
+	wmctrl -k on && touch /tmp/showing-desktop
+fi
