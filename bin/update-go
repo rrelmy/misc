@@ -1,0 +1,7 @@
+#!/bin/bash
+# update golang
+cd $GOROOT &&
+hg pull &&
+hg update release &&
+cd src &&
+./all.bash

@@ -1,0 +1,10 @@
+#!/bin/bash
+# simple golang compiler and linker wrapper (64bit)
+name=${1%.*}
+
+# compile and link
+6g ${1} &&
+6l -o ${name} ${name}.6 &&
+
+# clean up
+rm -f ${name}.6
