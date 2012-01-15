@@ -1,0 +1,16 @@
+#!/bin/bash
+# usage ./phonebackup "/the/path/you/desire/backup.ab"
+# this script requires adb in $PATH, android 4 or later, only one devices attached :)
+# TODO backup all attached phones
+
+# start adb server
+adb start-server;
+
+if [ `adb devices | grep device$ | wc -l` = 1 ]; then
+	echo "CAUTION: you have to confirm the backup on the device"
+	adb backup -f "$1" -all -apk
+else
+	echo "no device found, or more than one"
+fi
+
+# adb kill-server
